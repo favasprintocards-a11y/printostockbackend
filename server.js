@@ -203,13 +203,32 @@ app.get('/api/party/:partyName/stock', async (req, res) => {
             const txs = await Transaction.find({ product: p._id, party: partyName });
             let balance = 0;
             let transactionCount = txs.length;
+            let breakdownMap = {};
+
             txs.forEach(t => {
-                if (t.type === 'OUT') balance += t.quantity;
-                else balance -= t.quantity;
+                const layout = t.chipLayout || 'N/A';
+                const store = t.store || 'Main';
+                const key = `${store}_${layout}`;
+                
+                if (!breakdownMap[key]) {
+                    breakdownMap[key] = { store, layout, balance: 0 };
+                }
+
+                if (t.type === 'OUT') {
+                    balance += t.quantity;
+                    breakdownMap[key].balance += t.quantity;
+                } else {
+                    balance -= t.quantity;
+                    breakdownMap[key].balance -= t.quantity;
+                }
             });
+
+            const breakdown = Object.values(breakdownMap).filter(b => b.balance !== 0);
+
             const itemData = {
                 ...p,
                 partyBalance: balance,
+                breakdown,
                 hasHistory: transactionCount > 0
             };
             // DEBUG: See which items are being linked to which party
