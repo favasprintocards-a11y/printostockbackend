@@ -10,7 +10,8 @@ const transactionSchema = new mongoose.Schema({
     // Detailed fields for chip stock tracking
     chipLayout: { type: String },
     qtyOfSheet: { type: Number },
-    keyEncoding: { type: String }
+    keyEncoding: { type: String },
+    designParty: { type: String }
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
