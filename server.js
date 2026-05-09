@@ -140,7 +140,7 @@ app.delete('/api/products/:id', async (req, res) => {
 
 // Shared Logic: Update Transaction and cached balance
 app.post('/api/transactions', async (req, res) => {
-    const { productId, type, quantity, party, notes, chipLayout, qtyOfSheet, keyEncoding, designParty, store } = req.body;
+    const { productId, type, quantity, party, notes, chipLayout, qtyOfSheet, keyEncoding, designParty, store, date } = req.body;
     try {
         const qtyNum = Number(quantity);
         if (isNaN(qtyNum)) return res.status(400).json({ error: 'Invalid quantity' });
@@ -158,7 +158,8 @@ app.post('/api/transactions', async (req, res) => {
             qtyOfSheet: qtyOfSheet ? Number(qtyOfSheet) : undefined,
             keyEncoding,
             designParty,
-            store
+            store,
+            date: date ? new Date(date) : undefined
         });
 
         await transaction.save();
