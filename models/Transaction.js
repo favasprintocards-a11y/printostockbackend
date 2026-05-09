@@ -6,7 +6,11 @@ const transactionSchema = new mongoose.Schema({
     party: { type: String, default: 'General' },
     quantity: { type: Number, required: true },
     date: { type: Date, default: Date.now },
-    notes: { type: String }
+    notes: { type: String },
+    // Detailed fields for chip stock tracking
+    chipLayout: { type: String },
+    qtyOfSheet: { type: Number },
+    keyEncoding: { type: String }
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
