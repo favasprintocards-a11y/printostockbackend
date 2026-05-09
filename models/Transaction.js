@@ -11,7 +11,8 @@ const transactionSchema = new mongoose.Schema({
     chipLayout: { type: String },
     qtyOfSheet: { type: Number },
     keyEncoding: { type: String },
-    designParty: { type: String }
+    designParty: { type: String },
+    store: { type: String }
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
