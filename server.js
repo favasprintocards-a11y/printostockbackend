@@ -181,8 +181,8 @@ app.post('/api/transactions', async (req, res) => {
 // Update specific transaction (e.g., fix date/notes)
 app.put('/api/transactions/:id', async (req, res) => {
     try {
-        const { date, notes, quantity } = req.body;
-        const tx = await Transaction.findByIdAndUpdate(req.params.id, { date, notes, quantity }, { new: true });
+        const { date, notes, quantity, designParty, chipLayout, qtyOfSheet, keyEncoding, store } = req.body;
+        const tx = await Transaction.findByIdAndUpdate(req.params.id, { date, notes, quantity, designParty, chipLayout, qtyOfSheet, keyEncoding, store }, { new: true });
         res.json(tx);
     } catch (err) {
         res.status(400).json({ error: err.message });
