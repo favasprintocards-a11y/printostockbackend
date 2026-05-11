@@ -207,7 +207,12 @@ app.get('/api/party/:partyName/stock', async (req, res) => {
 
             txs.forEach(t => {
                 const layout = t.chipLayout || 'N/A';
-                const store = t.store || 'Main';
+                let store = t.store;
+                if (!store) {
+                    if (layout === '24') store = 'Unit';
+                    else if (layout === '10') store = 'Office';
+                    else store = 'Main';
+                }
                 const key = `${store}_${layout}`;
                 
                 if (!breakdownMap[key]) {
@@ -249,30 +254,6 @@ app.get('/api/products/:id/history', async (req, res) => {
             .sort({ date: -1 })
             .limit(100); // Standard limit for performance
         res.json(history);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/migrate-transactions', async (req, res) => {
-    try {
-        const txs = await Transaction.find({ type: 'OUT' });
-        let updated = 0;
-        for (const t of txs) {
-            const layout = t.chipLayout;
-            const qty = t.quantity;
-            const qtyOfSheet = t.qtyOfSheet;
-            if (layout && !qtyOfSheet) {
-                const totalCards = Number(layout) * Number(qty);
-                if (!isNaN(totalCards)) {
-                    await Transaction.updateOne({ _id: t._id }, {
-                        $set: { quantity: totalCards, qtyOfSheet: qty }
-                    });
-                    updated++;
-                }
-            }
-        }
-        res.json({ message: `Migration done. Updated ${updated} transactions.` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
