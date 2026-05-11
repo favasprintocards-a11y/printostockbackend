@@ -251,8 +251,7 @@ app.get('/api/party/:partyName/stock', async (req, res) => {
 app.get('/api/products/:id/history', async (req, res) => {
     try {
         const history = await Transaction.find({ product: req.params.id })
-            .sort({ date: -1 })
-            .limit(100); // Standard limit for performance
+            .sort({ date: -1 }); // Removed limit to ensure accurate running balance
         res.json(history);
     } catch (err) {
         res.status(500).json({ error: err.message });
