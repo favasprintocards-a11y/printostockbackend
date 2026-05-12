@@ -219,12 +219,19 @@ app.get('/api/party/:partyName/stock', async (req, res) => {
                     breakdownMap[key] = { store, layout, balance: 0 };
                 }
 
+                // Strict Formula: (Chip Layout × Input Sheet)
+                const chipL = Number(t.chipLayout || 0);
+                const sheets = Number(t.qtyOfSheet || 0);
+                const calculatedQty = (chipL > 0 && sheets > 0)
+                    ? chipL * sheets
+                    : (sheets > 0 ? sheets : t.quantity);
+
                 if (t.type === 'OUT') {
-                    balance += t.quantity;
-                    breakdownMap[key].balance += t.quantity;
+                    balance += calculatedQty;
+                    breakdownMap[key].balance += calculatedQty;
                 } else {
-                    balance -= t.quantity;
-                    breakdownMap[key].balance -= t.quantity;
+                    balance -= calculatedQty;
+                    breakdownMap[key].balance -= calculatedQty;
                 }
             });
 
